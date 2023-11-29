@@ -13,16 +13,16 @@ jobs:
   Validate_PR_Title:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Branch Name
+      - name: Check Target Branch Name
         run: |
-          branch_name="${{ github.event.pull_request.head.ref }}"
-          if [[ ! ${branch_name} =~ ^erp-sprint ]]; then
-            echo "Skipping PR title validation as the branch does not start with 'erp-sprint'"
+          target_branch_name="${{ github.event.pull_request.base.ref }}"
+          if [[ ! ${target_branch_name} =~ ^erp-sprint ]]; then
+            echo "Skipping PR title validation as the target branch does not start with 'erp-sprint'"
             exit 0
           fi
 
       - name: Check PR title
-        if: startsWith(github.event.pull_request.head.ref, 'erp-sprint') && github.event_name == 'pull_request'
+        if: startsWith(github.event.pull_request.base.ref, 'erp-sprint') && github.event_name == 'pull_request'
         run: |
           SKIP_LABEL="autorelease: pending"
           pr_labels='${{ toJSON(github.event.pull_request.labels) }}'
