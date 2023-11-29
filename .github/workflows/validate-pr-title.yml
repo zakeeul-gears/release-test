@@ -19,7 +19,7 @@ jobs:
           pr_title="${{ github.event.pull_request.title }}"
           
           # Define the regex pattern for the PR title
-          PR_TITLE_PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((account|inventory|general ledger)\): (.+) \[([A-Z]+-\d+)\]$"
+          PR_TITLE_PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((account|inventory|general ledger)\): (.+) \[([A-Z]+-\d+)]$"
           
           if [[ ! "${pr_title}" =~ ${PR_TITLE_PATTERN} ]]; then
             echo "error: invalid PR title format"
@@ -37,7 +37,7 @@ jobs:
               echo "   - Missing colon after PR category"
             fi
             
-            if [[ ! "${pr_title}" =~ \[([A-Z]+-\d+)\] ]]; then
+            if [[ ! "${pr_title}" =~ \[([A-Z]+-\d+)] ]]; then
               echo "   - Missing or invalid task ID (string4)"
             fi
             
