@@ -1,43 +1,16 @@
-name: Validate PR Title
+name: PR Conventional Commit Validation
 
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - edited
-      - labeled
-      - unlabeled
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
-  Validate_PR_Title:
+  validate-pr-title:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Target Branch Name
-        run: |
-          target_branch_name="${{ github.event.pull_request.base.ref }}"
-          if [[ ! ${target_branch_name} =~ ^erp-sprint ]]; then
-            echo "Skipping PR title validation as the target branch does not start with 'erp-sprint'"
-            exit 0
-          fi
-
-      - name: Check PR title
-        if: startsWith(github.event.pull_request.base.ref, 'erp-sprint') && github.event_name == 'pull_request'
-        run: |
-          SKIP_LABEL="autorelease: pending"
-          pr_labels='${{ toJSON(github.event.pull_request.labels) }}'
-
-          if [[ ${pr_labels} == *"${SKIP_LABEL}"* ]]; then
-            echo "Skipping PR title validation due to the presence of the '${SKIP_LABEL}' label"
-            exit 0
-          fi
-
-          pr_title="${{ github.event.pull_request.title }}"
-          
-          if [[ ! "${pr_title}" =~ ^([a-zA-Z]+)\(([a-zA-Z ]+)\): (.+) \[([A-Z]+-\d+)\]$ ]]; then
-            echo "error: invalid PR title format"
-            echo "Example: feat(Account): Implement new feature [OCH-1234]"
-            exit 1
-          fi
-
-          echo "PR title validation successful"
+      - name: PR Conventional Commit Validation
+        uses:  ytanikin/PRConventionalCommits@1.1.0
+        with:
+         task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
+         ticket_key_regex: '^PROJECT-\\d{2,5}$'
+         custom_labels: '{"feat": "feature", "fix": "fix", "docs": "documentation", "test": "test", "ci": "CI/CD", "refactor": "refactor", "perf": "performance", "chore": "chore", "revert": "revert", "wip": "WIP"}'
