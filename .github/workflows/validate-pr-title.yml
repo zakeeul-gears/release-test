@@ -33,9 +33,17 @@ jobs:
           fi
 
           pr_title="${{ github.event.pull_request.title }}"
-          PR_NAME_RE="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((Account|Inventory|General Ledger)\): [^[\]]* \[[A-Z]+-\d+\]$"
+          PR_NAME_RE="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((Account|Inventory|General Ledger)\): .+ \[[A-Z]+-\d+\]$"
           
-          if [[ ! "${pr_title}" =~ ${PR_NAME_RE} ]]; then
+          IFS=':' read -r -a parts <<< "$pr_title"
+          
+          if [[ ${#parts[@]} -ne 2 ]]; then
+            echo "error: invalid PR title"
+            echo "Example: feat(Account): Implement new feature [OCH-1234]"
+            exit 1
+          fi
+          
+          if [[ ! ${parts[0]} =~ ${PR_NAME_RE} ]]; then
             echo "error: invalid PR title"
             echo "Example: feat(Account): Implement new feature [OCH-1234]"
             exit 1
