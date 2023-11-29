@@ -20,7 +20,7 @@ jobs:
           echo "PR title: ${pr_title}"
           
           # Define the regex pattern for the PR title
-          PR_TITLE_PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((account|inventory|general ledger)\): (.+) \[([A-Z]+-\d+)\]$"
+          PR_TITLE_PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((account|inventory|general ledger)\): (.+) \[([A-Z]+-[0-9]+)\]$"
           
           if [[ ! "${pr_title}" =~ ${PR_TITLE_PATTERN} ]]; then
             echo "error: invalid PR title format"
