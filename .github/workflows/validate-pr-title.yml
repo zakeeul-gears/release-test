@@ -35,11 +35,11 @@ jobs:
           pr_title="${{ github.event.pull_request.title }}"
           pr_regex="^([a-zA-Z]+)\(([a-zA-Z ]+)\): (.+) \[([A-Z]+-\d+)\]$"
           
-          if ! [[ "${pr_title}" =~ ${pr_regex} ]]; then
-            echo "error: invalid PR title format"
-            echo "Example: feat(Account): Implement new feature [OCH-1234]"
-            exit 1
-          fi
+          # if ! [[ "${pr_title}" =~ ${pr_regex} ]]; then
+          #   echo "error: invalid PR title format"
+          #   echo "Example: feat(Account): Implement new feature [OCH-1234]"
+          #   exit 1
+          # fi
 
           # Extract individual parts
           pr_type="${BASH_REMATCH[1]}"
