@@ -33,18 +33,31 @@ jobs:
           fi
 
           pr_title="${{ github.event.pull_request.title }}"
-          PR_NAME_RE="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((Account|Inventory|General Ledger)\): .+ \[[A-Z]+-\d+\]$"
           
-          IFS=':' read -r -a parts <<< "$pr_title"
-          
-          if [[ ${#parts[@]} -ne 2 ]]; then
-            echo "error: invalid PR title"
+          # Check if the title has the correct format
+          if ! [[ "$pr_title" =~ ^([a-zA-Z]+)\(([a-zA-Z ]+)\): (.+) \[([A-Z]+-\d+)\]$ ]]; then
+            echo "error: invalid PR title format"
             echo "Example: feat(Account): Implement new feature [OCH-1234]"
             exit 1
           fi
-          
-          if [[ ! ${parts[0]} =~ ${PR_NAME_RE} ]]; then
-            echo "error: invalid PR title"
-            echo "Example: feat(Account): Implement new feature [OCH-1234]"
+
+          # Extract individual parts
+          pr_type="${BASH_REMATCH[1]}"
+          pr_category="${BASH_REMATCH[2]}"
+          pr_description="${BASH_REMATCH[3]}"
+          pr_task="${BASH_REMATCH[4]}"
+
+          # Check each part individually
+          if ! [[ "$pr_type" =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)$ ]]; then
+            echo "error: invalid PR type: $pr_type"
             exit 1
           fi
+
+          if ! [[ "$pr_category" =~ ^(Account|Inventory|General Ledger)$ ]]; then
+            echo "error: invalid PR category: $pr_category"
+            exit 1
+          fi
+
+          # You can add additional checks for pr_description and pr_task if needed
+
+          echo "PR title validation successful"
