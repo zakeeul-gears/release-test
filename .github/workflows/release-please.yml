@@ -15,5 +15,7 @@ jobs:
     steps:
       - uses: google-github-actions/release-please-action@v3
         with:
-          release-type: node
-          package-name: abc
+          release-type: simple
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          pull-request-header: ":robot: *beep* *boop* I have created a release"
+          command: manifest
