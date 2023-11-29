@@ -13,9 +13,24 @@ jobs:
   Validate_PR_Title:
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR title
-        if: github.event_name == 'pull_request'
+      - name: Check Target Branch Name
         run: |
+          target_branch_name="${{ github.event.pull_request.base.ref }}"
+          if [[ ! ${target_branch_name} =~ ^erp-sprint ]]; then
+            echo "Skipping PR title validation as the target branch does not start with 'erp-sprint'"
+            exit 0
+          fi
+      - name: Check PR title
+        if: startsWith(github.event.pull_request.base.ref, 'erp-sprint') && github.event_name == 'pull_request'
+        run: |
+          SKIP_LABEL="autorelease: pending"
+          pr_labels='${{ toJSON(github.event.pull_request.labels) }}'
+
+          if [[ ${pr_labels} == *"${SKIP_LABEL}"* ]]; then
+            echo "Skipping PR title validation due to the presence of the '${SKIP_LABEL}' label"
+            exit 0
+          fi
+          
           pr_title="${{ github.event.pull_request.title }}"
           echo "PR title: ${pr_title}"
           
@@ -23,15 +38,8 @@ jobs:
           PR_TITLE_PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((account|inventory|general ledger)\): (.+) \[([A-Z]+-[0-9]+)\]$"
           
           if [[ ! "${pr_title}" =~ ${PR_TITLE_PATTERN} ]]; then
-            echo "error: invalid PR title format"
-            echo "Regex pattern: ${PR_TITLE_PATTERN}"
-            
-            # Print captured parts for debugging
-            echo "Captured parts:"
-            for i in {1..4}; do
-              echo "   Group $i: ${BASH_REMATCH[$i]}"
-            done
-            
+             echo "error: invalid PR title"
+            echo "Example: feat(Account): Implement new feature [GCP-1234]"
             exit 1
           fi
 
