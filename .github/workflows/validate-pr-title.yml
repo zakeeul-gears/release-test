@@ -33,9 +33,9 @@ jobs:
           fi
 
           pr_title="${{ github.event.pull_request.title }}"
+          pr_regex="^([a-zA-Z]+)\(([a-zA-Z ]+)\): (.+) \[([A-Z]+-\d+)\]$"
           
-          # Check if the title has the correct format
-          if ! [[ "$pr_title" =~ ^([a-zA-Z]+)\(([a-zA-Z ]+)\): (.+) \[([A-Z]+-\d+)\]$ ]]; then
+          if ! [[ "${pr_title}" =~ ${pr_regex} ]]; then
             echo "error: invalid PR title format"
             echo "Example: feat(Account): Implement new feature [OCH-1234]"
             exit 1
@@ -48,13 +48,13 @@ jobs:
           pr_task="${BASH_REMATCH[4]}"
 
           # Check each part individually
-          if ! [[ "$pr_type" =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)$ ]]; then
-            echo "error: invalid PR type: $pr_type"
+          if ! [[ "${pr_type}" =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)$ ]]; then
+            echo "error: invalid PR type: ${pr_type}"
             exit 1
           fi
 
-          if ! [[ "$pr_category" =~ ^(Account|Inventory|General Ledger)$ ]]; then
-            echo "error: invalid PR category: $pr_category"
+          if ! [[ "${pr_category}" =~ ^(Account|Inventory|General Ledger)$ ]]; then
+            echo "error: invalid PR category: ${pr_category}"
             exit 1
           fi
 
