@@ -1,5 +1,5 @@
 name: Validate PR Title
-
+ 
 on:
   pull_request:
     types:
@@ -8,56 +8,26 @@ on:
       - edited
       - labeled
       - unlabeled
-
+ 
 jobs:
   Validate_PR_Title:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Target Branch Name
-        run: |
-          target_branch_name="${{ github.event.pull_request.base.ref }}"
-          if [[ ! ${target_branch_name} =~ ^erp-sprint ]]; then
-            echo "Skipping PR title validation as the target branch does not start with 'erp-sprint'"
-            exit 0
-          fi
-
       - name: Check PR title
-        if: startsWith(github.event.pull_request.base.ref, 'erp-sprint') && github.event_name == 'pull_request'
         run: |
           SKIP_LABEL="autorelease: pending"
           pr_labels='${{ toJSON(github.event.pull_request.labels) }}'
-
+ 
           if [[ ${pr_labels} == *"${SKIP_LABEL}"* ]]; then
             echo "Skipping PR title validation due to the presence of the '${SKIP_LABEL}' label"
             exit 0
           fi
-
+ 
           pr_title="${{ github.event.pull_request.title }}"
-          pr_regex="^([a-zA-Z]+)\(([a-zA-Z ]+)\): (.+) \[([A-Z]+-\d+)\]$"
-          
-          # if ! [[ "${pr_title}" =~ ${pr_regex} ]]; then
-          #   echo "error: invalid PR title format"
-          #   echo "Example: feat(Account): Implement new feature [OCH-1234]"
-          #   exit 1
-          # fi
-
-          # Extract individual parts
-          pr_type="${BASH_REMATCH[1]}"
-          pr_category="${BASH_REMATCH[2]}"
-          pr_description="${BASH_REMATCH[3]}"
-          pr_task="${BASH_REMATCH[4]}"
-
-          # Check each part individually
-          if ! [[ "${pr_type}" =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)$ ]]; then
-            echo "error: invalid PR type: ${pr_type}"
+          PR_NAME_RE="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((Account|Configuration|Database|Finance|Inventory|Procurement|Sales|UI)\)(!)?: ([A-Z].*) \[O30-[0-9]+\]$"
+          if [[ ! ${pr_title} =~ ${PR_NAME_RE} ]]; then
+            echo "error: invalid PR title"
+            echo "Example: feat: subject [OCH-1234]"
             exit 1
           fi
-
-          if ! [[ "${pr_category}" =~ ^(Account|Inventory|General Ledger)$ ]]; then
-            echo "error: invalid PR category: ${pr_category}"
-            exit 1
-          fi
-
-          # You can add additional checks for pr_description and pr_task if needed
-
-          echo "PR title validation successful"
+ 
