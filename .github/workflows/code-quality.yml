@@ -23,8 +23,9 @@ jobs:
         run: composer install --no-scripts --no-progress --no-suggest
 
       - name: Check Code Standard
-        run: |
-          export PATH="$PATH:$(pwd)/vendor/bin"
-          phpcs --standard=PSR2 app/ tests/
-          phpstan analyze app/ --level max
+        run: composer check-style
+
+      - name: Analyze Code
+        run: composer analyze-code
+
 
