@@ -45,7 +45,9 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
+        "check-style": "phpcs --standard=PSR2 app/ tests/",
+        "analyze-code": "phpstan analyze app/ --level max"
     },
     "extra": {
         "laravel": {
@@ -55,6 +57,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
+        "bin-dir": "vendor/bin",
         "sort-packages": true
     },
     "minimum-stability": "dev",

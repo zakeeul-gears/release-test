@@ -1,0 +1,31 @@
+name: Code Standard Check
+
+on:
+  pull_request:
+    paths:
+      - 'app/**/*'
+      - '*.php'
+
+jobs:
+  check-code-standard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Install dependencies
+        run: composer install --no-scripts --no-progress --no-suggest
+
+      - name: Check Code Standard
+        run: composer check-style
+
+      - name: Analyze Code
+        run: composer analyze-code
+
+
