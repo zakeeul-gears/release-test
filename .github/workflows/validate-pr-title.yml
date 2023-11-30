@@ -20,7 +20,6 @@ jobs:
             echo "Skipping PR title validation as the target branch does not start with 'erp-sprint'"
             exit 0
           fi
-
       - name: Check PR title
         if: startsWith(github.event.pull_request.base.ref, 'erp-sprint') && github.event_name == 'pull_request'
         run: |
@@ -31,12 +30,17 @@ jobs:
             echo "Skipping PR title validation due to the presence of the '${SKIP_LABEL}' label"
             exit 0
           fi
-
+          
           pr_title="${{ github.event.pull_request.title }}"
-          PR_NAME_RE="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((Account|Inventory|General Ledger)\): [^[\]]+ \[[A-Z]+-\d+\]$"
-
-          if [[ ! ${pr_title} =~ ${PR_NAME_RE} ]]; then
-            echo "error: invalid PR title"
-            echo "Example: feat(Account): Implement new feature [OCH-1234]"
+          echo "PR title: ${pr_title}"
+          
+          # Define the regex pattern for the PR title
+          PR_TITLE_PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)\((account|inventory|general ledger)\): (.+) \[([A-Z]+-[0-9]+)\]$"
+          
+          if [[ ! "${pr_title}" =~ ${PR_TITLE_PATTERN} ]]; then
+             echo "error: invalid PR title"
+            echo "Example: feat(Account): Implement new feature [GCP-1234]"
             exit 1
           fi
+
+          echo "PR title validation successful"
