@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0 (2025-08-26)
+
+
+### Features
+
+* cd ([e8d1d9b](https://github.com/zakeeul-gears/release-test/commit/e8d1d9bb1423763a1238b061d73596255da5fffd))
+* **cd:** cd ([b8c679f](https://github.com/zakeeul-gears/release-test/commit/b8c679f55b260f7ac585bb5381641a277a80d16c))
+* **inventory:** imple ([6e9d262](https://github.com/zakeeul-gears/release-test/commit/6e9d262beb9858d11f411cc1db39155e4659d77a))
+* sd ([d0aa3a9](https://github.com/zakeeul-gears/release-test/commit/d0aa3a942f5020d7e499ed3684e59581eb1bce8a))
+
 ## [2.0.0](https://github.com/zakeeul-gears/laravel/compare/v1.0.0...v2.0.0) (2023-11-23)
 
 
