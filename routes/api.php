@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //as
+//cdscds
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
