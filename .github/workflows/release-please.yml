@@ -2,7 +2,8 @@ on:
   push:
     branches:
       - master
-
+      - uat
+      
 permissions:
   contents: write
   pull-requests: write
